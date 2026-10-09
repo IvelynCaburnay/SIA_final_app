@@ -1,0 +1,826 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetCare Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        button, input {
+            font-family: inherit;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 14px;
+            background: #1d4ed8;
+            color: white;
+        }
+
+        .brand {
+            padding: 0 12px 30px;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .side-label {
+            padding: 10px 12px;
+            color: #bfdbfe;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            margin: 4px 0;
+            padding: 13px 14px;
+            border: none;
+            border-radius: 9px;
+            background: transparent;
+            color: white;
+            text-align: left;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: #3b82f6;
+        }
+
+        .side-icon {
+            width: 22px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .sidebar-bottom form {
+            margin: 0;
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .muted {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .user-badge {
+            padding: 12px 16px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        /* STATISTICS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            padding: 22px;
+            background: white;
+            border-radius: 13px;
+            box-shadow: 0 3px 12px #0f172a0b;
+        }
+
+        .stat-card p {
+            margin: 0 0 12px;
+            color: #64748b;
+        }
+
+        .stat-card h2 {
+            margin: 0;
+            color: #2563eb;
+            font-size: 30px;
+        }
+
+        /* PET TABLE */
+        .section {
+            padding: 24px;
+            background: white;
+            border-radius: 13px;
+            box-shadow: 0 3px 12px #0f172a0b;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .section-heading h2 {
+            margin: 0 0 6px;
+        }
+
+        .tools {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search {
+            min-width: 220px;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+        }
+
+        .btn {
+            padding: 10px 13px;
+            border: none;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 800px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 13px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .type-pill {
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .health-pill {
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .actions form {
+            margin: 0;
+        }
+
+        .messages {
+            margin-bottom: 18px;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .empty {
+            padding: 25px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        /* MODALS */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #0f172a99;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 25px;
+            border-radius: 14px;
+            background: white;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close-btn {
+            border: none;
+            background: none;
+            color: #64748b;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-field {
+            margin-bottom: 14px;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .errorlist {
+            color: #dc2626;
+            font-size: 12px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 72px;
+                padding: 20px 7px;
+            }
+
+            .brand {
+                text-align: center;
+                padding: 0 0 25px;
+            }
+
+            .brand-text,
+            .side-label,
+            .side-text {
+                display: none;
+            }
+
+            .sidebar-link {
+                justify-content: center;
+                padding: 13px 4px;
+            }
+
+            .main {
+                margin-left: 72px;
+                padding: 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main {
+                padding: 12px;
+            }
+
+            .topbar h1 {
+                font-size: 23px;
+            }
+
+            .user-badge {
+                display: none;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            🐾 <span class="brand-text">PetCare</span>
+        </div>
+
+        <div class="side-label">MAIN MENU</div>
+
+        <a href="{% url 'dashboard' %}" class="sidebar-link active">
+            <span class="side-icon">▦</span>
+            <span class="side-text">Dashboard</span>
+        </a>
+
+        <button type="button" class="sidebar-link" onclick="openAddModal()">
+            <span class="side-icon">＋</span>
+            <span class="side-text">Add Pet</span>
+        </button>
+
+        <a href="#pet-list" class="sidebar-link">
+            <span class="side-icon">☷</span>
+            <span class="side-text">Pet Records</span>
+        </a>
+
+        <button type="button" class="sidebar-link" onclick="focusPetSearch()">
+            <span class="side-icon">⌕</span>
+            <span class="side-text">Find a Pet</span>
+        </button>
+
+        <!-- LOGOUT: redirects to the login page -->
+        <div class="sidebar-bottom">
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+
+                <button type="submit" class="sidebar-link">
+                    <span class="side-icon">↪</span>
+                    <span class="side-text">Logout</span>
+                </button>
+            </form>
+        </div>
+
+    </aside>
+
+    <!-- MAIN DASHBOARD -->
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>Dashboard</h1>
+                <div class="muted">
+                    Welcome to your PetCare management system.
+                </div>
+            </div>
+
+            <div class="user-badge">
+                👤 {{ request.user.username }}
+            </div>
+        </header>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- STATISTICS -->
+        <section class="stats">
+            <div class="stat-card">
+                <p>Total Registered Pets</p>
+                <h2>{{ pets|length }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>Dogs</p>
+                <h2>{{ dog_count }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>Cats</p>
+                <h2>{{ cat_count }}</h2>
+            </div>
+        </section>
+
+        <!-- PET RECORDS -->
+        <section class="section" id="pet-list">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Pet Records</h2>
+                    <div class="muted">
+                        View and manage your registered pets.
+                    </div>
+                </div>
+
+                <div class="tools">
+                    <input
+                        type="search"
+                        id="petSearch"
+                        class="search"
+                        placeholder="Search pets..."
+                        oninput="searchPets()"
+                    >
+
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        onclick="openAddModal()"
+                    >
+                        + Add Pet
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pet</th>
+                            <th>Type</th>
+                            <th>Age</th>
+                            <th>Breed</th>
+                            <th>Owner</th>
+                            <th>Contact</th>
+                            <th>Health</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for pet in pets %}
+                            <tr class="pet-row">
+                                <td><strong>{{ pet.pet_name }}</strong></td>
+
+                                <td>
+                                    <span class="type-pill">
+                                        {{ pet.pet_type }}
+                                    </span>
+                                </td>
+
+                                <td>{{ pet.age }}</td>
+                                <td>{{ pet.breed }}</td>
+                                <td>{{ pet.owner_name }}</td>
+                                <td>{{ pet.contact_number }}</td>
+
+                                <td>
+                                    <span class="health-pill">
+                                        {{ pet.health_status }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="actions">
+                                        <button
+                                            type="button"
+                                            class="btn btn-edit"
+                                            data-id="{{ pet.pet_id }}"
+                                            data-name="{{ pet.pet_name }}"
+                                            data-type="{{ pet.pet_type }}"
+                                            data-age="{{ pet.age }}"
+                                            data-breed="{{ pet.breed }}"
+                                            data-owner="{{ pet.owner_name }}"
+                                            data-contact="{{ pet.contact_number }}"
+                                            data-health="{{ pet.health_status }}"
+                                            onclick="openEditModal(this)"
+                                        >
+                                            Edit
+                                        </button>
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'delete_pet' pet.pet_id %}"
+                                            onsubmit="return confirm('Are you sure you want to delete this pet?');"
+                                        >
+                                            {% csrf_token %}
+                                            <button
+                                                type="submit"
+                                                class="btn btn-delete"
+                                            >
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" class="empty">
+                                    No pet records yet. Click Add Pet to begin.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <p id="noSearchResults" class="empty" style="display:none;">
+                No matching pet records found.
+            </p>
+
+        </section>
+    </main>
+
+    <!-- ADD PET MODAL -->
+    <div class="modal" id="addPetModal">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h2>Add New Pet</h2>
+                <button
+                    type="button"
+                    class="close-btn"
+                    onclick="closeModal('addPetModal')"
+                >
+                    &times;
+                </button>
+            </div>
+
+            <form method="post" action="{% url 'add_pet' %}">
+                {% csrf_token %}
+
+                <div class="form-grid">
+                    {% for field in form %}
+                        <div class="form-field">
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.errors %}
+                                {{ field.errors }}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="modal-actions">
+                    <button
+                        type="button"
+                        class="btn btn-cancel"
+                        onclick="closeModal('addPetModal')"
+                    >
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        Save Pet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- EDIT PET MODAL -->
+    <div class="modal" id="editPetModal">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h2>Edit Pet Record</h2>
+                <button
+                    type="button"
+                    class="close-btn"
+                    onclick="closeModal('editPetModal')"
+                >
+                    &times;
+                </button>
+            </div>
+
+            <form method="post" id="editPetForm" action="">
+                {% csrf_token %}
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="edit_pet_name">Pet Name</label>
+                        <input class="form-control" type="text"
+                               name="pet_name" id="edit_pet_name" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="edit_pet_type">Pet Type</label>
+                        <input class="form-control" type="text"
+                               name="pet_type" id="edit_pet_type" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="edit_age">Age</label>
+                        <input class="form-control" type="number"
+                               name="age" id="edit_age" min="0" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="edit_breed">Breed</label>
+                        <input class="form-control" type="text"
+                               name="breed" id="edit_breed" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="edit_owner_name">Owner Name</label>
+                        <input class="form-control" type="text"
+                               name="owner_name" id="edit_owner_name" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="edit_contact_number">Contact Number</label>
+                        <input class="form-control" type="text"
+                               name="contact_number" id="edit_contact_number" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="edit_health_status">Health Status</label>
+                        <input class="form-control" type="text"
+                               name="health_status" id="edit_health_status" required>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button
+                        type="button"
+                        class="btn btn-cancel"
+                        onclick="closeModal('editPetModal')"
+                    >
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        Update Pet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openAddModal() {
+            document.getElementById('addPetModal').classList.add('show');
+        }
+
+        function openEditModal(button) {
+            const petId = button.dataset.id;
+
+            document.getElementById('editPetForm').action =
+                "/edit-pet/" + petId + "/";
+
+            document.getElementById('edit_pet_name').value = button.dataset.name;
+            document.getElementById('edit_pet_type').value = button.dataset.type;
+            document.getElementById('edit_age').value = button.dataset.age;
+            document.getElementById('edit_breed').value = button.dataset.breed;
+            document.getElementById('edit_owner_name').value = button.dataset.owner;
+            document.getElementById('edit_contact_number').value = button.dataset.contact;
+            document.getElementById('edit_health_status').value = button.dataset.health;
+
+            document.getElementById('editPetModal').classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        function focusPetSearch() {
+            document.getElementById('petSearch').focus();
+
+            document.getElementById('pet-list').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        function searchPets() {
+            const query = document.getElementById('petSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('.pet-row');
+            let visible = 0;
+
+            rows.forEach(function(row) {
+                const matches = row.innerText.toLowerCase().includes(query);
+                row.style.display = matches ? '' : 'none';
+
+                if (matches) {
+                    visible++;
+                }
+            });
+
+            document.getElementById('noSearchResults').style.display =
+                rows.length > 0 && visible === 0 ? 'block' : 'none';
+        }
+
+        document.querySelectorAll('.modal').forEach(function(modal) {
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal.show').forEach(function(modal) {
+                    modal.classList.remove('show');
+                });
+            }
+        });
+
+        {% if modal_to_open == 'add' %}
+            openAddModal();
+        {% endif %}
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | PetCare</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            background: linear-gradient(135deg, #eaf3ff, #c9e0ff);
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 450px;
+            padding: 35px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(18, 74, 130, .15);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            text-align: center;
+            color: #0867c9;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            margin-bottom: 28px;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0867c9;
+            box-shadow: 0 0 0 3px rgba(8,103,201,.1);
+        }
+
+        .helptext {
+            display: block;
+            margin-top: 7px;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .helptext ul {
+            padding-left: 18px;
+        }
+
+        .errorlist,
+        .error-message {
+            color: #c62828;
+            font-size: 12px;
+            margin-top: 7px;
+            padding-left: 0;
+        }
+
+        .errorlist {
+            list-style: none;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            background: #0867c9;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .submit-button:hover {
+            background: #064783;
+            transform: translateY(-1px);
+        }
+
+        .auth-footer {
+            margin-top: 23px;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .auth-footer a {
+            color: #0867c9;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="auth-card">
+        <div class="logo">🐾</div>
+
+        <h1>Create Account</h1>
+
+        <p class="subtitle">
+            Join PetCare to manage pet information and records.
+        </p>
+
+        <form method="post" action="{% url 'signup' %}">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    name="{{ form.username.html_name }}"
+                    id="{{ form.username.id_for_label }}"
+                    value="{{ form.username.value|default:'' }}"
+                    autocomplete="username"
+                    maxlength="150"
+                    required
+                >
+
+                {% if form.username.errors %}
+                    <div class="error-message">
+                        {{ form.username.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    name="{{ form.password1.html_name }}"
+                    id="{{ form.password1.id_for_label }}"
+                    autocomplete="new-password"
+                    required
+                >
+
+                {% if form.password1.help_text %}
+                    <div class="helptext">
+                        {{ form.password1.help_text|safe }}
+                    </div>
+                {% endif %}
+
+                {% if form.password1.errors %}
+                    <div class="error-message">
+                        {{ form.password1.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    name="{{ form.password2.html_name }}"
+                    id="{{ form.password2.id_for_label }}"
+                    autocomplete="new-password"
+                    required
+                >
+
+                {% if form.password2.errors %}
+                    <div class="error-message">
+                        {{ form.password2.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="submit-button">
+                Create Account
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account?
+            <a href="{% url 'login' %}">Sign In</a>
+        </div>
+    </main>
+</body>
+</html>

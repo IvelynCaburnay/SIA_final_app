@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Pet | PetCare</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 15px;
+            background: #edf3fa;
+            color: #263445;
+        }
+
+        .edit-container {
+            max-width: 650px;
+            margin: 30px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #0867c9;
+        }
+
+        .description {
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0867c9;
+        }
+
+        .error {
+            color: #c62828;
+            font-size: 12px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 11px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .save {
+            background: #0867c9;
+            color: white;
+        }
+
+        .back {
+            background: #e2e8f0;
+            color: #263445;
+        }
+
+        @media (max-width: 550px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .edit-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="edit-container">
+        <h1>Edit Pet Information</h1>
+        <p class="description">
+            Update the details for {{ pet.pet_name }}.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.errors %}
+                        <div class="error">
+                            {{ field.errors|striptags }}
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if form.non_field_errors %}
+                <p class="error">{{ form.non_field_errors }}</p>
+            {% endif %}
+
+            <div class="actions">
+                <a href="{% url 'dashboard' %}" class="button back">
+                    Cancel
+                </a>
+
+                <button type="submit" class="button save">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

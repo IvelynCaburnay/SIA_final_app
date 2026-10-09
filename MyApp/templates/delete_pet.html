@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Pet</title>
+</head>
+<body>
+
+    <h1>Confirm Delete</h1>
+
+    <p>
+        Are you sure you want to delete
+        <strong>{{ pet.pet_name }}</strong>?
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Yes, Delete Pet</button>
+        <a href="{% url 'dashboard' %}">Cancel</a>
+    </form>
+
+</body>
+</html>
